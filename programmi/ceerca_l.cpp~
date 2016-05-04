@@ -1,0 +1,90 @@
+//compile ith: mkoctfile --link-stand-alone ceerca_l.cpp -o ceerca_l 
+#include <iostream>
+#include "rast.cpp"
+#include "plot_octave.cpp"
+
+using namespace std;
+
+/*
+R:1 G:4 B:7 Rp:10 Gp:13 Bp:0
+r:4 g:8 b:4
+r:5 g:9 b:3
+r:6 g:9 b:3
+r:7 g:10 b:2
+r:7 g:11 b:2
+r:8 g:11 b:2
+r:8 g:11 b:2
+R:2 G:5 B:8 Rp:11 Gp:14 Bp:7
+r:4 g:8 b:8
+r:5 g:8 b:8
+r:5 g:9 b:8
+r:6 g:9 b:8
+r:7 g:11 b:7
+r:8 g:11 b:7
+R:3 G:6 B:9 Rp:12 Gp:15 Bp:15
+r:3 g:7 b:10
+r:4 g:7 b:10
+r:6 g:10 b:12
+r:10 g:14 b:14
+r:11 g:14 b:14
+*/
+
+/*papabili:
+8,6,6,4,11,0
+13,9,13,3,14,12
+*/
+int main() {
+	list<vector<int> > punti1 = rast3d(1, 4, 7, 10, 13, 0);
+	list<vector<int> > punti2 = rast3d(2,5,6,11,14,7);
+	list<vector<int> > punti3 = rast3d(3,6,9,12,15,15);
+	
+	list<vector<int> > puntipr = rast3d(3,8,6,11,14,9);
+	vector<int> x1;
+	vector<int> y1;
+	vector<int> z1;
+	
+	vector<int> x2;
+	vector<int> y2;
+	vector<int> z2;
+	
+	vector<int> x3;
+	vector<int> y3;
+	vector<int> z3;
+	
+	vector<int> xpr;
+	vector<int> ypr;
+	vector<int> zpr;
+	for(list<vector<int> >::iterator it=punti1.begin(); it!=punti1.end(); ++it) {
+		vector<int> c = *it;
+		x1.push_back(c[0]);
+		y1.push_back(c[1]);
+		z1.push_back(c[2]);
+	}
+	for(list<vector<int> >::iterator it=punti2.begin(); it!=punti2.end(); ++it) {
+		vector<int> c = *it;
+		x2.push_back(c[0]);
+		y2.push_back(c[1]);
+		z2.push_back(c[2]);
+	}
+	for(list<vector<int> >::iterator it=punti3.begin(); it!=punti3.end(); ++it) {
+		vector<int> c = *it;
+		x3.push_back(c[0]);
+		y3.push_back(c[1]);
+		z3.push_back(c[2]);
+	}
+	for(list<vector<int> >::iterator it=puntipr.begin(); it!=puntipr.end(); ++it) {
+		vector<int> c = *it;
+		xpr.push_back(c[0]);
+		ypr.push_back(c[1]);
+		zpr.push_back(c[2]);
+	}
+	
+	plot_rast(x1,y1,z1);
+	hold();
+	plot_rast(x2,y2,z2);
+	plot_rast(x3,y3,z3);
+	plot_rast_red(xpr,ypr,zpr);
+	pausa(5);
+	
+	return 0;
+}

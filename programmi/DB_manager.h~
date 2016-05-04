@@ -1,0 +1,30 @@
+#ifndef DB_MANAGER_H
+#define DB_MANAGER_H
+
+#include <string>
+#include "immagine.h"
+#include <iostream>
+#include <pqxx/pqxx>
+
+
+class DB_manager {
+	public:
+		
+		//crea una nuova immagine e torna l'id appena generato
+		int new_image(std::string url);
+		
+		int find_point(int r, int g, int b);
+		
+		int new_point(int r, int g, int b);
+		
+		int new_line(int *id_punti);
+		
+		
+		void save_possiede(int id_immagine, int *id_linee, int n_linee);
+		
+		/*
+		vector<immagine> load_db();*/	
+};
+
+#endif
+

@@ -1,0 +1,31 @@
+#include <vector>
+#include <iostream>
+#include <pqxx/pqxx>
+
+#ifndef IMMAGINE
+#define IMMAGINE
+#endif
+
+#ifndef DB_MANAGER
+#include "DB_manager.cpp"
+#endif
+
+#ifndef LINEA
+#include "linea.cpp"
+#endif
+
+using namespace pqxx;
+
+class immagine {
+	public:
+		
+		void add_linea(linea l);
+		
+		void print_data();
+		
+		void save_ondb();	
+		
+		void set_id_immagine(int id_immagine);
+};	
+
+

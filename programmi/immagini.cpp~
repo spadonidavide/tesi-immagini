@@ -1,0 +1,667 @@
+#include <iostream>
+#include <time.h> 
+#include<stdlib.h>
+#include <list>
+#include <utility>
+#include <fstream>
+#include <algorithm>
+
+using namespace std;
+
+const int sup = 1;
+const int inf = -sup;
+
+
+class linea {
+	private:
+		int r;
+		int g;
+		int b;
+		
+		int rp;
+		int gp;
+		int bp;
+		
+	public:
+		linea(int r, int g, int b, int rp, int gp, int bp){
+			this->r = r;
+			this->g = g;
+			this->b = b;
+			this->rp = rp;
+			this->gp = gp;
+			this->bp = bp;
+		}
+		
+		int get_r(){
+			return r;
+		}
+		
+		int get_g(){
+			return g;
+		}
+		
+		int get_b(){
+			return b;
+		}
+		
+		int get_rp(){
+			return rp;
+		}
+		
+		int get_gp(){
+			return gp;
+		}
+		
+		int get_bp(){
+			return bp;
+		}
+		
+		void print() {
+			cout << "R:"<<r<<" G:"<<g<<" B:"<<b<< " Rp:"<<rp<<" Gp:"<<gp<<" Bp:"<<bp<<endl;
+		}
+		
+		
+		bool confronta_diff(linea l) {
+		
+			if ( (r - l.get_r()) < inf || (r - l.get_r()) > sup) {
+				
+				return false;
+			}
+			if (( g - l.get_g()) < inf || (g - l.get_g()) > sup) {
+				
+				return false;
+			}
+			if ( (b - l.get_b()) < inf || (b - l.get_b()) > sup) {
+				
+				return false;
+			}
+			if ( (rp - l.get_rp()) < inf || (rp - l.get_rp()) > sup) {
+				
+				return false;
+			}
+			if ( (gp - l.get_gp()) < inf || (gp - l.get_gp()) > sup) {
+				
+				return false;
+			}
+			if ( (bp - l.get_bp()) < inf || (bp - l.get_bp()) > sup) {
+				
+				return false;
+			}
+			
+			
+			return true;
+			
+		}
+		
+		bool operator==(linea l) {
+			return confronta_diff(l);
+		}
+		
+		
+};
+
+list<linea>::iterator VUOTO;
+
+class immagine {
+	private:
+		list<linea> lines;
+		
+		static const int n_linee = 10;
+		
+		
+		/***************************************CSP***************************/
+		list<linea>::iterator l_csp[n_linee];
+		
+		
+		
+		bool controlla_diversi() {
+			for(int i=0; i<n_linee; ++i) {
+				if(l_csp[i]!=VUOTO){
+					for(int j=0; j<n_linee; ++j) {
+						if(l_csp[j]!=VUOTO){
+							if(l_csp[i]==l_csp[j] && i!=j)
+								return false;
+						}
+					}
+				}
+					
+			}
+			return true;
+		}
+		
+		bool controlla_soluzione() {
+			if(!controlla_diversi())
+				return false;
+			for(int i=0; i<n_linee; ++i)
+				if(l_csp[i]==VUOTO)
+					return false;
+				
+			
+			return true;
+		}
+		
+		void confronta_linee(list<linea>::iterator l_corrente, list<linea> lines2, int indice_corrente) {
+						
+			if(indice_corrente==n_linee)
+				return;
+				
+			linea l1 = *l_corrente;
+			if(l_csp[indice_corrente]==VUOTO) {
+				for(list<linea>::iterator it=lines2.begin(); it!=lines2.end(); ++it) {
+					//cout<<"index"<<indice_corrente<<endl;
+					linea l2 = *it;
+					l_csp[indice_corrente] = it;
+					if(controlla_diversi() && l1.confronta_diff(l2)) {
+						confronta_linee(++l_corrente, lines2, indice_corrente+1);
+					
+					}
+					if(controlla_soluzione()){
+						return;
+					}
+				}
+			}
+			l_csp[indice_corrente] = VUOTO;
+		}
+		
+		
+		
+		
+		/**************************************************END CSP*******************/
+		
+	public:
+		immagine() {
+			 
+			 for(int i=0;i<n_linee;++i)
+			 	l_csp[i]=VUOTO;
+			 	
+		}
+	
+		void add_linea(linea l) {
+			lines.push_front(l);
+		}
+		
+		void remove_linea(list<linea>::iterator it) {
+			lines.erase(it);
+		}
+		
+		list<linea> get_lines(){
+			return lines;
+		}
+		
+		bool confronta(immagine im) {
+			list<linea> l2 = im.get_lines();
+			
+			confronta_linee(lines.begin(), l2, 0);
+			
+			/*for(list<linea>::iterator it=l2.begin(); it!=l2.end(); ++it){
+				if(find(lines.begin(), lines.end(), *it)==lines.end())
+					return false;
+				else {
+					
+				}	
+			}*/
+			
+			return controlla_soluzione();
+		}
+		
+		
+		
+		
+		void print() {
+			cout<<"nuova immagine:"<<endl;
+			for(list<linea>::iterator ij=lines.begin(); ij!=lines.end(); ++ij) {
+				cout<<"		";
+				linea l = *ij;
+				l.print();
+			}
+		}
+		
+		void stampa_csp(){
+			if(controlla_soluzione()) {
+				for(int i=0; i<n_linee; ++i){
+					linea l = *l_csp[i];
+					cout<<endl;
+					l.print();	
+				}
+			}
+			else {
+				cout<<"soluzione non trovata"<<endl;
+			}
+		}
+};
+
+
+bool comparatore(list<linea> l1, list<linea> l2) {
+	return l1.size()>l2.size();
+}
+
+
+int main() {
+	ofstream f_linee;
+	f_linee.open("linee.txt");	
+	
+	list< list<immagine> > insiemi;
+	
+	list<immagine> immagini;
+	
+	list<linea> l_vuoto;
+	VUOTO = l_vuoto.end();
+	/*
+	//prova
+	immagine im1;
+	int r,g,b,rp,gp,bp;
+	for(int i=0; i<10; ++i) {
+			r = 1;//rand() % 16;
+			g = 1;//rand() % 16;
+			b = 1;//rand() % 16;
+			rp = 1;//rand() % 16;
+			gp = 1;//rand() % 16;
+			bp = 1;//rand() % 16;
+			
+			linea nuova = linea(r,g,b,rp,gp,bp);
+			im1.add_linea(nuova);
+	}
+	immagine im2;
+	
+	
+	for(int i=0; i<10; ++i) {
+			r = 1;//rand() % 16;
+			g = 1;//rand() % 16;
+			b = 1;//rand() % 16;
+			rp = 1;//rand() % 16;
+			gp = 1;//rand() % 16;
+			bp = 1;//rand() % 16;
+			
+			linea nuova = linea(r,g,b,rp,gp,bp);
+			im2.add_linea(nuova);
+	}*/
+	
+	////////////////////////////////////////////
+	
+	
+	//prova
+	immagine im1;
+	int r,g,b,rp,gp,bp;
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	linea nuova = linea(r,g,b,rp,gp,bp);
+	im1.add_linea(nuova);
+	
+	/////////////////// 2
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im1.add_linea(nuova);
+	
+		///////////////////3
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im1.add_linea(nuova);
+	
+		/////////////////// 4
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im1.add_linea(nuova);
+	
+		/////////////////// 5
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im1.add_linea(nuova);
+	
+		/////////////////// 6
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im1.add_linea(nuova);
+	
+		/////////////////// 7
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im1.add_linea(nuova);
+	
+		/////////////////// 8
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im1.add_linea(nuova);
+	
+		/////////////////// 9
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im1.add_linea(nuova);
+	
+		/////////////////// 10
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im1.add_linea(nuova);
+
+	
+	/////////////////////////////
+	///////////////////////// m2
+	////////////////////////////
+	immagine im2;
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im2.add_linea(nuova);
+	
+	/////////////////// 2
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im2.add_linea(nuova);
+	
+		///////////////////3
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im2.add_linea(nuova);
+	
+		/////////////////// 4
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im2.add_linea(nuova);
+	
+		/////////////////// 5
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im2.add_linea(nuova);
+	
+		/////////////////// 6
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im2.add_linea(nuova);
+	
+		/////////////////// 7
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 5;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im2.add_linea(nuova);
+	
+		/////////////////// 8
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im2.add_linea(nuova);
+	
+		/////////////////// 9
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 1;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im2.add_linea(nuova);
+	
+		/////////////////// 10
+	r = 1;//rand() % 16;
+	g = 1;//rand() % 16;
+	b = 1;//rand() % 16;
+	rp = 5;//rand() % 16;
+	gp = 1;//rand() % 16;
+	bp = 1;//rand() % 16;
+		
+	nuova = linea(r,g,b,rp,gp,bp);
+	im2.add_linea(nuova);
+		
+	
+	/////////////////////
+	im1.confronta(im2);
+	im1.stampa_csp();
+
+	
+	
+/*
+	for(int i=0; i<500;++i){
+		int r,g,b,rp,gp,bp;
+		
+		immagine im;
+		for(int i=0; i<10; ++i) {
+			r = 1;//rand() % 16;
+			g = 1;//rand() % 16;
+			b = 1;//rand() % 16;
+			rp = 1;//rand() % 16;
+			gp = 1;//rand() % 16;
+			bp = rand() % 16;
+			
+			linea nuova = linea(r,g,b,rp,gp,bp);
+			im.add_linea(nuova);
+		}
+		
+		
+		immagini.push_front(im);
+	}
+	
+	
+	while(immagini.size() > 0) {
+		immagine im1 = *immagini.begin();
+		immagini.pop_front();
+		
+		list< immagine > im_app;
+		im_app.push_front(im1);
+		
+		list<immagine>::iterator jt=immagini.begin(); 
+		while(jt!=immagini.end()) {
+			immagine im2 = *jt;
+			if (im1.confronta(im2)) {
+			 	im_app.push_back(im2);
+			 	jt = immagini.erase(jt);
+			 	
+			 	//cout << immagini.size() << endl;
+			 	cout << "im1" << endl;
+			 	im1.print();
+			 	cout << "im2" << endl;
+			 	im2.print();
+			}
+			
+			jt++;
+		}
+		
+		insiemi.push_front(im_app);
+		
+	}	
+	
+	
+	/*
+	for(list<immagine>::iterator it=immagini.begin(); it!=immagini.end(); ++it) {
+		immagine im = *it;
+		list<linea> l = im.get_lines();
+		cout<<"nuova immagine:"<<endl;
+		for(list<linea>::iterator ij=l.begin(); ij!=l.end(); ++ij) {
+			cout<<"		";
+			linea l = *ij;
+			l.print();
+		}
+		
+	}*/
+	
+	/*
+	
+	while(contenitori.size() > 0) {
+		linea l1 = *contenitori.begin();
+		contenitori.pop_front();
+		
+		list< linea > lapp;
+		lapp.push_front(l1);
+		
+		list<linea>::iterator jt=contenitori.begin(); 
+		while(jt!=contenitori.end()) {
+			linea l2 = *jt;
+			if (l1.confronta_diff(l2)) {
+			 	lapp.push_back(l2);
+			 	jt = contenitori.erase(jt);
+			 	
+			 	cout << contenitori.size() << endl;
+			}
+			
+			jt++;
+		
+		}
+		
+		insiemi.push_front(lapp);
+		
+	}
+	
+	insiemi.sort(comparatore);
+	
+	/*
+	int c_liste[500];
+	
+	for(int i=0; i<500; ++i) {
+		c_liste[i] = 0;
+	}*/
+	/*
+	
+	for(list<list<linea> >::iterator it=insiemi.begin(); it!=insiemi.end(); ++it) {
+		list<linea> c = *it;		
+		
+		//c_liste[c.size()]++;
+		
+		
+		if (c.size()==5){
+			cout<<"------------------insieme di contenitori-----------------"<<endl;
+			for(list<linea >::iterator jt=c.begin(); jt!=c.end(); ++jt) {
+				linea l = *jt;
+				l.print();
+			}
+		}
+		
+	}*/
+	/*
+	for(int i=0; i<10; ++i)
+		cout<<c_liste[i]<<" di cardinalita "<<i<<endl;*/
+	
+	/*
+	//salvo su file
+	for(list<list<linea> >::iterator it=insiemi.begin(); it!=insiemi.end(); ++it) {
+		list<linea> c = *it;
+		
+		list<linea>::iterator end = c.end();
+		end--;
+		
+		for(list<linea>::iterator ij=c.begin(); ij!=c.end(); ij++) {
+			linea l = *ij;
+			f_linee<< l.get_r() <<"\n"<< l.get_g()<<"\n"  << l.get_b()<<"\n"
+			 << l.get_rp()<<"\n"  << l.get_gp()<<"\n" << l.get_bp()<<"\n";
+			
+			if (ij == end){
+				f_linee<<"\n";
+			}
+			
+		 }
+		
+	}
+	*/
+	
+	
+	f_linee.close();
+	return 0;
+}
+
+
+
+
+
+
+

@@ -1,0 +1,3 @@
+function []=stop(t)
+	%pause(t);
+	input ("Pick a number, any number! ");

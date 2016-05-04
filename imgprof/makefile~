@@ -1,0 +1,6 @@
+test: test.c
+	g++ indicizza_immagini.cpp -w -Dcimg_use_vt100 -Dcimg_display=0 -fno-tree-pre -lm -lpqxx -lpq -lpthread
+	
+crea_dati: crea_dati_db.cpp
+	g++ crea_dati_db.cpp -o crea_dati -Wall -W -ansi -pedantic -lpqxx -lpq  -Dcimg_use_vt100 -Dcimg_display=0 -fno-tree-pre -lm
+	

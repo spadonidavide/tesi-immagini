@@ -1,0 +1,9 @@
+#!/bin/bash
+
+rm flickr.txt
+for ((i=1;i<=10;i++)); do
+wget -O flickr.xml "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=a0772f8b739aa1939056922d3f6ecce3&text=$1&page=$i"
+cat flickr.xml | grep owner | tr '"\t' ' ' | tr -s ' ' | awk '{printf "https://farm%s.staticflickr.com/%s/%s_%s_m.jpg\n",$11,$9,$3,$7;}' >> flickr.txt
+done
+wget -i flickr.txt
+#cat flickr.txt | while read a; do b=`basename $a`; cp $b test.jpg; ./a.out | grep score | grep total; done 

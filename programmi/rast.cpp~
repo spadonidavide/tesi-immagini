@@ -1,0 +1,187 @@
+#ifndef list
+#include <list>
+#endif
+
+#ifndef list
+#include <vector>
+#endif
+
+#ifndef list
+#include <utility>
+#endif
+
+
+using namespace std;
+
+void stampa_indici(list<vector<int> > punti){
+	for(list<vector<int> >::iterator it = punti.begin(); it != punti.end(); ++it) {
+		vector<int> punto = *it;
+		
+		cout<<"x:"<<punto[0]<<" y:"<<punto[1]<<" z:"<<punto[2]<<endl;
+	}
+}
+
+float abs1(float number) {
+	if(number < 0)
+		return -number;
+		
+	return number;	
+}
+
+int sign(int number) {
+	if(number>=0) 
+		return 1;
+		
+	return -1;
+	
+}
+
+void swap(int &x, int &y) {
+	int app = x;
+	x = y;
+	y = app;
+}
+
+list<pair<int, int> > rast_verticale(int x0, int y0, int x1, int y1) {
+	list<pair<int, int> > punti;
+	if(y0 > y1) {
+		for(int y = y0; y >= y1; --y) {
+			pair<int, int> punto(x0, y);
+			punti.push_back(punto);
+		}
+	}
+	else {
+		for(int y = y0; y <= y1; ++y) {
+			pair<int, int> punto(x0, y);
+			punti.push_back(punto);
+		}
+	}
+	return punti;
+}
+
+list<pair<int, int> > rast(int x0, int y0, int x1, int y1) {
+	if(x1 == x0)
+		return rast_verticale(x0, y0, x1, y1);
+
+	list<pair<int, int> > punti;
+	float deltax = x1 - x0;
+	float deltay = y1 - y0;	
+	float errore = 0;
+	float deltaerr = abs1(deltay / deltax);
+	int y = y0;
+	
+	if(x0 < x1) {	
+		for(int x = x0; x <= x1; ++x) {
+			pair<int, int> punto(x, y);
+			punti.push_back(punto);
+			errore += deltaerr;
+		
+			while(errore>=0.5) {
+				if(y<=y1) {
+					pair<int, int> punto(x, y);
+					punti.push_back(punto);
+				}
+				y += sign(y1 - y0);
+				errore = errore - 1.0;
+			}
+		}
+	}
+	else {
+		for(int x = x0; x >= x1; --x) {
+			pair<int, int> punto(x, y);
+			punti.push_back(punto);
+			errore += deltaerr;
+		
+			while(errore>=0.5) {
+				if(y<=y1) {
+					pair<int, int> punto(x, y);
+					punti.push_back(punto);
+				}
+				y += sign(y1 - y0);
+				errore = errore - 1.0;
+			}
+		}
+	}
+	
+	return punti;
+}
+
+
+list<vector<int> > rast3d_verticale(int x0, int y0, int z0, int x1, int y1, int z1) {
+	list<vector<int> > punti;
+	list<pair<int, int> > puntizy = rast(y0, z0, y1, z1);
+	
+	for(list<pair<int, int> >::iterator it = puntizy.begin(); it!=puntizy.end(); ++it) {
+		int pt[] = {x0, it->first, it->second};
+  		vector<int> punto (pt, pt + sizeof(pt) / sizeof(int) );
+		punti.push_back(punto);
+	}
+	return punti;
+}
+
+list<vector<int> > rast3d(int x0, int y0, int z0, int x1, int y1, int z1) {
+	list<vector<int> > punti;
+	
+	if(x0 > x1) {
+		swap(x0, x1);
+		swap(y0, y1);
+		swap(z0, z1);
+	}
+	
+	if(x0 == x1) {
+		punti = rast3d_verticale(x0, y0, z0, x1, y1, z1);
+		punti.unique();
+		//stampa_indici(punti);
+		return punti;
+	}
+
+	float dx = x1 - x0;
+	float dy = y1 - y0;	
+	float dz = z1 - z0;
+	
+	int y = y0;
+	int z = z0;
+	
+	float derry = abs1(dy / dx);
+	float derrz = abs1(dz / dx);
+	
+	float erry = 0;
+	float errz = 0;
+	
+	for(int x = x0; x <= x1; ++x) {
+		int pt[] = {x, y, z};
+		vector<int> punto (pt, pt + sizeof(pt) / sizeof(int) );
+		punti.push_back(punto);
+	
+		erry += derry;
+		errz += derrz;
+		while(erry > 0.5 || errz > 0.5) {
+			if(erry > 0.5 && y != y1) {
+				y += sign(y1 - y0);
+			}
+			if(erry > 0.5)  
+				erry -= 1.0;
+			
+			
+			if(errz > 0.5 && z != z1) {
+				z += sign(z1 - z0);
+				
+			}
+			if(errz > 0.5) 
+				errz -= 1.0;
+			
+			
+			int pt[] = {x, y, z};
+			vector<int> punto (pt, pt + sizeof(pt) / sizeof(int) );
+			punti.push_back(punto);
+		}
+		
+
+		
+	}
+	punti.unique();
+	//stampa_indici(punti);
+	return punti;
+	
+}
+

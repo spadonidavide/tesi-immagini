@@ -1,0 +1,62 @@
+#!/bin/bash
+wget -O temp.tmp http://www.youtube.com/watch?v=$1
+cat temp.tmp | grep board_spe | tr ',' '\n' | grep board_spe | tr '|' '\n' > 1.txt
+
+l=`cat 1.txt | wc -l`;
+if ( [ $l -eq 0 ] ); then
+echo NO preview
+exit 2
+fi
+
+echo quality 1 .. $[$l-1]
+
+if ( [ $2 -le 0 ] ); then
+echo ERROR quality
+exit 2
+fi
+
+#quality internamente shifta di 1, perche' c'e' una riga in piu'
+if ( [ $2 = max ] ); then
+quality=$[ $l ] 
+else
+quality=$[$2+1] #incrementa di uno (range 1..)
+fi
+
+if ( [ $quality -gt $l ] ); then
+echo qualita non supportata
+exit 2
+fi
+
+l=$[$l-2];
+
+sigh=`cat 1.txt | head -$quality | tail -1 | tr '#"' '\n ' | tail -1`
+l=$[$quality-2]; #numero da mettere su $L
+n=`cat 1.txt |  head -$quality | tail -1 | tr '#"' '\n ' | tail -6 | head -1`
+format=`cat 1.txt | head -$quality | tail -1 | tr '#"' '\n ' | tail -2 | head -1`
+x=`cat 1.txt | head -$quality | tail -1 | tr '#"' '\n ' | tail -5 | head -1`
+y=`cat 1.txt | head -$quality | tail -1 | tr '#"' '\n ' | tail -4 | head -1`
+
+quanti=$[($n-1)/$x/$y+1]
+for ((i=0;i<quanti;i++)); do
+temp=`cat 1.txt | tr '"' '\n' | grep http`
+(echo $temp?sigh=$sigh | sed 's!\\/!/!g'  | sed s/\$L/$l/g | sed s/\$N/$format/g | sed s/\$M/$i/g)>2.txt
+a=`cat 2.txt`
+wget $a -O temp$i.jpg
+done
+montage temp*.jpg -tile 1x -geometry +0+0 test.jpg
+rm -r temp*.jpg
+./a.out
+#rm -r test.jpg
+#rm -r temp.tmp
+#rm -r 1.txt
+#rm -r 2.txt
+
+open test.jpg
+open stats.jpg
+open out.jpg
+
+#dot graph.dot -Tpdf -o a.pdf
+sfdp graph1.dot -Tpdf -o a.pdf -Goverlap=prisma -Goverlap_scaling=2 -Gsep=+40 -Gsplines
+dot graph2.dot -Tpdf -o a.pdf -Goverlap=prism -Goverlap_scaling=2 -Gsep=+40 -Gsplines 
+sfdp graph2.dot -Tpdf -o a.pdf -Gstart=0 -Goverlap=prism -Gsep=+5 -Gsize=30,10 -Gpage=30,10
+open -a Preview a.pdf

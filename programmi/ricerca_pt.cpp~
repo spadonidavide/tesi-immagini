@@ -1,0 +1,240 @@
+#include <iostream>
+#include <pqxx/pqxx> 
+#include <vector>
+#include <ctime>
+
+using namespace std;
+using namespace pqxx;
+
+
+
+//elevamento a potenza
+int pow(int base, int esponente) {
+	int result = base;
+	for(int i=0; i<esponente; ++i) {
+		result = result * base;
+	}
+	
+	return result;
+}
+
+class linea {
+	private:
+		int r;
+		int g;
+		int b;
+		
+		int rp;
+		int gp;
+		int bp;
+		
+	public:
+		linea(int r, int g, int b, int rp, int gp, int bp){
+			this->r = r;
+			this->g = g;
+			this->b = b;
+			this->rp = rp;
+			this->gp = gp;
+			this->bp = bp;
+		}
+		
+		int get_r(){
+			return r;
+		}
+		
+		int get_g(){
+			return g;
+		}
+		
+		int get_b(){
+			return b;
+		}
+		
+		int get_rp(){
+			return rp;
+		}
+		
+		int get_gp(){
+			return gp;
+		}
+		
+		int get_bp(){
+			return bp;
+		}
+		
+		void print() {
+			cout << "R:"<<r<<" G:"<<g<<" B:"<<b<< " Rp:"<<rp<<" Gp:"<<gp<<" Bp:"<<bp<<endl;
+		}
+		
+		
+		int get_indice() {
+	
+			int indice = r + g * 16 + b * pow(16, 2) + rp * pow(16, 3) + gp * pow(16, 4) + bp * pow(16, 5);
+	
+			return indice;
+		}
+		
+		
+};
+
+int intervallo_min(int n) {
+	if(n<=0) return 0;
+	return n-1;
+}
+
+int intervallo_max(int n) {
+	if(n>=15) return 15;
+	return n+1;
+}
+
+
+//prende in input i due vettori e dice se siamo arrivati in fondo
+bool raggiunto_max(int *v, int *v_app) {
+	for(int i=0; i<6; ++i){
+		if(v_app[i]<intervallo_max(v[i]))
+			return false;
+	}
+	
+	return true;
+}
+
+
+//torna gli indici dei vicini di una line con i parametri contenuti in v
+list<int> get_indici(int *v){
+	//vettore che andra a contenere gli indici che sto cercando
+	list<int> indici;
+	int v_app[6];
+	for(int i=0; i<6; ++i) {
+		v_app[i] = intervallo_min(v[i]);
+	}
+	
+	//elemento corrente
+	int current = 5;
+	
+	//genero tutti gli indici di distanza 1
+	while(!raggiunto_max(v, v_app)){
+		linea l(v_app[0], v_app[1], v_app[2], v_app[3], v_app[4], v_app[5]);
+		if((v_app[current]<=intervallo_max(v[current]))){
+			indici.push_front(l.get_indice());
+			v_app[current]++;
+			//l.print();
+		}
+		else {			
+			do {
+				v_app[current] = intervallo_min(v[current]);
+				--current;
+				
+			}while((v_app[current]>=intervallo_max(v[current]) && current>=0));
+			if(current>=0) {
+				v_app[current]++;
+				
+			}
+			current=5;
+			
+		}
+	}
+	linea l(v_app[0], v_app[1], v_app[2], v_app[3], v_app[4], v_app[5]);
+	indici.push_front(l.get_indice());
+	v_app[current]++;
+	
+	return indici;
+}
+
+
+void ricerca(linea l, const vector<list<linea> > &linee) {
+	int v_linea[6] = {l.get_r(), l.get_b(), l.get_g(), l.get_rp(), l.get_gp(), l.get_bp()};
+	list<int> indici = get_indici(v_linea);
+	
+	//stampo tutte le dimensioni delle  liste vicine della linea in input
+	for(list<int>::iterator it=indici.begin(); it!=indici.end(); ++it) {
+		list<linea> lista = linee[*it];
+		if(lista.size()>0) {
+			linea l = *lista.begin();
+			cout<<lista.size()<<" elementi:";
+			l.print();
+		}
+			
+		/*
+		for(list<linea>::iterator ij=lista.begin(); ij!=lista.end(); ++ij) {
+			linea l = *ij;
+			l.print();
+		}*/
+	
+	}
+	
+}
+
+
+int main(int argc, char* argv[]) {
+	
+	string sql;
+	
+	list<linea> lista;
+	
+	//struttura contenente tutte le mie linee
+	vector<list<linea> > linee(pow(16,6),		 lista);
+	   
+	try{
+	
+		cout<<"Caricamento dati DB"<<endl;
+		//carico i dati dal db
+		connection C("dbname=postgres user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
+		
+		sql = "SELECT r,g,b,rp,gp,bp from linee;";
+		nontransaction N(C);
+		result R( N.exec( sql ));
+		
+		int r,g,b,rp,gp,bp;
+		
+			
+		cout<<"num di record caricati: "<<R.size()<<endl;
+		
+		//carico tutto il db nell vettore linee	
+		for (result::const_iterator c = R.begin(); c != R.end(); ++c) {
+			r = c[0].as<int>();
+			g = c[1].as<int>();
+			b = c[2].as<int>();
+			rp = c[3].as<int>();
+			gp = c[4].as<int>();
+			bp = c[5].as<int>();
+			
+			linea l(r,g,b,rp,gp,bp);
+			
+			int indice = l.get_indice();
+			
+			linee[indice].push_front(l);
+			
+		}
+		
+		
+		
+		C.disconnect();
+		
+		cout << "Dati caricati correttamente" << endl;
+		
+		do {
+			cout<<"inserisci linea"<<endl;
+			cin>>r;
+			cin>>g;
+			cin>>b;
+			cin>>rp;
+			cin>>gp;
+			cin>>bp;
+			
+			if(r!=-1) {
+				linea l_r(r,g,b,rp,gp,bp);
+				l_r.print();
+				ricerca(l_r, linee);
+			}
+			
+  			
+			
+		}while(r!=-1);
+		
+	}catch (const std::exception &e){
+		cerr << e.what() << endl;
+		return 1;
+	}
+
+	return 0;
+}
