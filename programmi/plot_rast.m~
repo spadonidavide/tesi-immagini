@@ -1,6 +1,0 @@
-function []=plot_rast(x,y,z)
-	plot3(x,y,z);
-	hold on;
-	
-	
-
