@@ -81,3 +81,5 @@
 /home/davide/Immagini/immagini/immagini_caricate/8496924430_2e2f9cdb57_m.jpg
 /home/davide/Immagini/immagini/immagini_caricate/9652864125_57da68e315_m.jpg
 /home/davide/Immagini/immagini/immagini_caricate/9656092446_11d16ee4e4_m.jpg
+/home/davide/Immagini/immagini/immagini_caricate/25773170584_1c10449389_m.jpg
+/home/davide/Immagini/immagini/immagini_caricate/25751818373_62478fa7f7_m.jpg

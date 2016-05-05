@@ -105,7 +105,7 @@ vector<string> get_classifica(I_manager manager) {
 	vector<int> scarti;
 	
 	for(int j=0; j<N_CLASSIFICA; ++j) {
-		int max = 0;
+		int max = -1;
 		int index_max;
 		
 		for(int i=0; i<bitmask_pesi.size(); ++i) {

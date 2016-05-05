@@ -24,13 +24,15 @@ int main() {
 			printf("%s\n", path);
 			analisi_immagine(path);
 			if(strlen(path)>0) {
-				string path_app(path);
+				//string path_vecchio(path);
+				string path_nuovo(path);
 
 				//aggiusta il path che viene salvato nel db e nel file
-				//immagini ==> immagini/immagini_caricate 
-				paths.push_back(path_app);
+				//	~/immagini/~ ==> ~/immagini/immagini_caricate/~
+				path_nuovo.replace(path_nuovo.find("immagini"), 8, "immagini/immagini_caricate"); 
+				paths.push_back(path_nuovo);
 
-				img = load_file("bezier.txt", path_app.c_str());
+				img = load_file("bezier.txt", path_nuovo.c_str());
 				db_manager.save_image(img);
 				++id_img;
 				vector<indice> indici_app = imanager.indicizza_opt(img, id_img);
