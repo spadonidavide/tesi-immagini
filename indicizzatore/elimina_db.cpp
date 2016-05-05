@@ -1,3 +1,4 @@
+//compile with:g++ elimina_db.cpp -o elimina -lpqxx -lpq
 #include <string>
 #include <iostream>
 #include <pqxx/pqxx>
@@ -8,7 +9,7 @@ using namespace pqxx;
 
 int main() {
 	try{
-		connection C("dbname=postgres user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
+		connection C("dbname=immagini user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
 		if (C.is_open()) {
 			//cout << "Opened database successfully: " << C.dbname() << endl;
 		} 

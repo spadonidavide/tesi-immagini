@@ -85,7 +85,7 @@ float match_prof() {
 	fscanf(f1,"%f",&w_test1);
 
 	for (int i=0;i<12;i++)
-	fscanf(f1,"%d, ",&bezier_test1[i]);
+		fscanf(f1,"%d, ",&bezier_test1[i]);
 
 	//printf("%f: ",w_test1);
 	//for (int i=0;i<12;i++)

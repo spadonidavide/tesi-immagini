@@ -12,7 +12,7 @@
 using namespace std;
 
 int N_CLASSIFICA = 50;
-string default_ipath = "/home/davide/Immagini/immagini/immagini_caricate/";
+string default_ipath;// = "home/davide/Immagini/immagini/immagini_caricate/";
 
 vector<float> bitmask_pesi;
 vector<int> bitmask;
@@ -114,7 +114,9 @@ vector<string> get_classifica(I_manager manager) {
 				index_max = i; 
 			}
 		}
-		string p = "/home/davide/Immagini/immagini/"+manager.get_image_path(index_max);
+
+		string p = manager.get_image_path(index_max);
+		cout<<"path mod "<<p<<endl;
 		classifica.insert(classifica.begin(), p);
 		scarti.push_back(index_max);
 	}
@@ -122,7 +124,19 @@ vector<string> get_classifica(I_manager manager) {
 	return classifica;
 }
 
+//imposta il path dove saranno andate a cercare le immagini
+string set_default_ipath() {
+	char buf[255];
+	FILE *f=fopen("../indicizzatore/base_path.txt", "r");
+	fscanf(f, "%s", buf);
+	string p(buf);
+	p += "Immagini/immagini/immagini_caricate/";	
+	fclose(f);
+	return p;
+}
+
 int main() {
+	default_ipath = set_default_ipath();
 	I_manager manager;
 	vector<list<id_iml> > p_immagini = manager.get_structure();
 	
@@ -158,6 +172,7 @@ int main() {
 		else{
 			
 			path_immagine = default_ipath + path_immagine;
+
 			//faccio l'analisi dell'immagine che mi salva i dati in output.txt
 			//analisi_immagini(path_immagine.c_str());
 			//immagine img = load_file("img_ricerca.txt", path_immagine);
@@ -193,8 +208,12 @@ int main() {
 			
 			DB_manager db_manager;
 			vector<string> c_paths = db_manager.ordina_classifica(paths);
+
 			for(int i=0; i<c_paths.size();++i) {
 				cout<<c_paths[i]<<endl;
+				//ho aggiunto due volte nel path consecutivamente la cartella immagini_caricate quindi torno indiero(trucchetto)
+				//es: immagini_caricate/../immagini_caricate
+				c_paths[i] = c_paths[i];
 			}
 			
 

@@ -5435,7 +5435,7 @@ for (int i=1;i<tempcol.size()-1;i++){
 }
 
   /////cronometra1
-clock_t begin = clock();
+//clock_t begin = clock();
   /// clustering bezier con priorita' ai primi (piu' forti)
 if (1)
   for (int j1=0;j1<lists.size();j1++)
@@ -5858,12 +5858,12 @@ for (int px=base;px<base+side;px++)
 }
 }
 /////////////////////cronometra
-clock_t end = clock();
+/*clock_t end = clock();
 double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 
 cout<<endl<<"tempo:"<<elapsed_secs<<endl;
 int i;
-cin>>i;
+cin>>i;*/
   /*
  // tolgo eventuale nodo con 2 archi ( bypassato )
   for (int i=0;i<nnode;i++)

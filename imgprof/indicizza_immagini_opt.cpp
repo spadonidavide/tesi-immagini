@@ -26,7 +26,8 @@ int main() {
 			if(strlen(path)>0) {
 				string path_app(path);
 
-				path_app.insert(8, "_caricate");
+				//aggiusta il path che viene salvato nel db e nel file
+				//immagini ==> immagini/immagini_caricate 
 				paths.push_back(path_app);
 
 				img = load_file("bezier.txt", path_app.c_str());
@@ -51,7 +52,7 @@ int main() {
 	clock_t end = clock();
  	double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 
- 	cout<<endl<<"tempo:"<<elapsed_secs<<endl;
+ 	cout<<endl<<"tempo di indicizzazione:"<<elapsed_secs<<" per "<<paths.size()<<" immagini"<<endl;
 
 
 	return 0;

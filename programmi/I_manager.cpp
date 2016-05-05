@@ -24,13 +24,13 @@ struct indice{
 };
 
 //path del file che contiene i dati indicizzati
-static string indicizz_path = "/home/davide/Documenti/tesi/indicizzatore/indicizzatore.txt";
+static string indicizz_path = "../indicizzatore/indicizzatore.txt";
 
 //path del file che contiene l-ultimo id inserito
-static string last_id_path = "/home/davide/Documenti/tesi/indicizzatore/last_id.txt";
+static string last_id_path = "../indicizzatore/last_id.txt";
 
 //path del file che contiene i path delle mmagini indicizzate
-static string img_id_path = "/home/davide/Documenti/tesi/indicizzatore/path_immagini.txt";
+static string img_id_path = "../indicizzatore/path_immagini.txt";
 
 class I_manager {
 	private:
@@ -57,7 +57,7 @@ class I_manager {
 		}
 		
 	public:
-	
+
 		//legge l'ultimo id inserito delle imagini
 		int read_last_id() {
 			fstream f(last_id_path.c_str());

@@ -12,16 +12,17 @@ using namespace std;
 using namespace pqxx;
 
 
+static string conn_string = "dbname=immagini user=postgres password=segreto hostaddr=127.0.0.1 port=5432";
+
 
 class DB_manager {
-
 public:
 	//crea una nuova immagine e torna l'id appena generato
 	/*
 	int new_image(string url){
 		int id_immagine;
 		try{
-			connection C("dbname=postgres user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
+			connection C(conn_string);
 			if (C.is_open()) {
 				//cout << "Opened database successfully: " << C.dbname() << endl;
 			} 
@@ -42,7 +43,7 @@ public:
 			id_immagine = c[0].as<int>();
 			N.commit();
 	
-			C.disconnect ();
+			C.disconnect ();outp
 		
 		}catch (const std::exception &e){
 			cerr << e.what() << std::endl;
@@ -55,7 +56,7 @@ public:
 	int find_point(int r, int g, int b) {
 		int id_punto;
 		try{
-			connection C("dbname=postgres user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
+			connection C(conn_string);
 			if (C.is_open()) {
 				//cout << "Opened database successfully: " << C.dbname() << endl;
 			} 
@@ -91,7 +92,7 @@ public:
 	int new_point(int r, int g, int b) {
 		int id_punto;
 		try{
-			connection C("dbname=postgres user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
+			connection C(conn_string);
 			if (C.is_open()) {
 				//cout << "Opened database successfully: " << C.dbname() << endl;
 			} 
@@ -120,7 +121,7 @@ public:
 	int new_line(int *id_punti, float peso) {
 		int id_linea;
 		try{
-			connection C("dbname=postgres user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
+			connection C(conn_string);
 			if (C.is_open()) {
 				//cout << "Opened database successfully: " << C.dbname() << endl;
 			} 
@@ -160,7 +161,7 @@ public:
 	void save_possiede(int id_immagine, int *id_linee, int n_linee){
 
 		try{
-			connection C("dbname=postgres user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
+			connection C(conn_string);
 			if (C.is_open()) {
 				//cout << "Opened database successfully: " << C.dbname() << endl;
 			} 
@@ -188,7 +189,7 @@ public:
 	void load_db(result::const_iterator &begin, result::const_iterator &end) {
 		
 		try{
-			connection C("dbname=postgres user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
+			connection C(conn_string);
 			if (C.is_open()) {
 				//cout << "Opened database successfully: " << C.dbname() << endl;
 			} 
@@ -249,7 +250,7 @@ public:
 	
 	void save_image(immagine img) {
 		try{
-			connection C("dbname=postgres user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
+			connection C(conn_string);
 			if (C.is_open()) {
 				//cout << "Opened database successfully: " << C.dbname() << endl;
 			} 
@@ -337,7 +338,7 @@ public:
 	
 	bool exist_image(string id_img) {
 		try{
-			connection C("dbname=postgres user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
+			connection C(conn_string);
 			if (C.is_open()) {
 				//cout << "Opened database successfully: " << C.dbname() << endl;
 			} 
@@ -371,12 +372,14 @@ public:
 			
 			FILE* f = fopen("output2.txt", "w");
 						
-			string path = paths[i].substr(31, paths[i].length()-31);
+			//ho un path del tipo: /home/username/Immagini/immagini/immagini_caricate/nome_img.jpg in paths[i]
+			//devo ottenere: immagini_caricate/nome_img.jpg
+			string path = paths[i];
 			string sql = "SELECT peso, l1, l2, l3, l4 FROM linee, possiede, immagini WHERE nome='"+path+"'";
 			sql += " and fk_id_immagini=id_immagini and fk_id_linee=id_linee;";
 			
 			try{
-				connection C("dbname=postgres user=postgres password=segreto hostaddr=127.0.0.1 port=5432");
+				connection C(conn_string);
 				if (C.is_open()) {
 					//cout << "Opened database successfully: " << C.dbname() << endl;
 				} 
