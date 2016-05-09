@@ -20,6 +20,7 @@ rm -R libpqxx-4.0
 rm -R libpqxx-4.0.tar.gz
 
 sudo apt-get install cimg-dev
+sudo apt-get install imagemagick
 
 mkdir ~/Immagini/immagini
 mkdir ~/Immagini/immagini/immagini_caricate

@@ -918,6 +918,8 @@ void stats(){
  }
 }
 
+/////////////fine statst
+
 vector<int3> pair1;
 vector<int3> pair2;
 vector<float> pairv;
@@ -2656,8 +2658,8 @@ if (0)
 
 void linea(int p1x,int p1y,int p2x, int p2y){
   printf("linea %d %d %d %d\n",p1x,p1y,p2x,p2y);
-  //  for (int x=0;x<sx;x+=1){
-  //  for (int y=0;y<sy;y+=1){
+      //  for (int x=0;x<sx;x+=1){
+      //  for (int y=0;y<sy;y+=1){
   int steps=abs(p1x-p2x);
   if (steps<abs(p1y-p2y))
     steps=abs(p1y-p2y);
@@ -2669,7 +2671,7 @@ void linea(int p1x,int p1y,int p2x, int p2y){
     int y=(int)round(s1*p2y+(1-s1)*p1y);
     int x1=(int)round(s2*p2x+(1-s2)*p1x);
     int y1=(int)round(s2*p2y+(1-s2)*p1y);
-    //    printf("%d %d %f, %d %d - %d %d\n",s,steps,(s1*p1y+(1-s1)*p2y),x,y,x1,y1);
+      //    printf("%d %d %f, %d %d - %d %d\n",s,steps,(s1*p1y+(1-s1)*p2y),x,y,x1,y1);
     unsigned char r,g,b;
     unsigned char r1,g1,b1;
     r=src(x,y,0,0);
@@ -2683,94 +2685,94 @@ void linea(int p1x,int p1y,int p2x, int p2y){
       /// linea di colore
     int stepsc=abs(r-r1);
     if (stepsc<abs(g-g1))
-     stepsc=abs(g-g1);
-   if (stepsc<abs(b-b1))
-     stepsc=abs(b-b1);
+      stepsc=abs(g-g1);
+    if (stepsc<abs(b-b1))
+      stepsc=abs(b-b1);
 
       if (stepsc==0){ // self loop!
         int r2=r;
         int g2=g;
         int b2=b;
         A[r2/S][g2/S][b2/S]++;
-    //    printf("%d %d %d -> %d %d %d\n",r2,g2,b2,r3,g3,b3);
+      //    printf("%d %d %d -> %d %d %d\n",r2,g2,b2,r3,g3,b3);
         int found=-1;
         for (int ct=0;ct<alist[r2/S][g2/S][b2/S].size();ct++)
-         if (alist[r2/S][g2/S][b2/S][ct].x==r2/S &&
-           alist[r2/S][g2/S][b2/S][ct].y==g2/S &&
-           alist[r2/S][g2/S][b2/S][ct].z==b2/S){
-           found=ct;
-         ct=alist[r2/S][g2/S][b2/S].size();
-       }
-       if (found>=0){
-	  alist[r2/S][g2/S][b2/S][found].w+=1;//+abs(r/S-r1/S)+abs(g/S-g1/S)+abs(b/S-b1/S);
-	}
-	else{//aggiungi
-   edge t;
-   t.x=r2/S;
-   t.y=g2/S;
-   t.z=b2/S;
-   t.w=1.0;
-   alist[r2/S][g2/S][b2/S].push_back(t);
- }
-}
+          if (alist[r2/S][g2/S][b2/S][ct].x==r2/S &&
+            alist[r2/S][g2/S][b2/S][ct].y==g2/S &&
+            alist[r2/S][g2/S][b2/S][ct].z==b2/S){
+            found=ct;
+          ct=alist[r2/S][g2/S][b2/S].size();
+        }
+        if (found>=0){
+      alist[r2/S][g2/S][b2/S][found].w+=1;//+abs(r/S-r1/S)+abs(g/S-g1/S)+abs(b/S-b1/S);
+    }
+      else{//aggiungi
+        edge t;
+        t.x=r2/S;
+        t.y=g2/S;
+        t.z=b2/S;
+        t.w=1.0;
+        alist[r2/S][g2/S][b2/S].push_back(t);
+      }
+    }
 
       //printf("\n");
-for (int sc=0;sc<stepsc;sc++) {
-  float sc1=(float)sc/stepsc;
-  float sc2=(float)(sc+1)/stepsc;
-  int r2=(int)round(sc1*r1+(1-sc1)*r);
-  int g2=(int)round(sc1*g1+(1-sc1)*g);
-  int b2=(int)round(sc1*b1+(1-sc1)*b);
-  int r3=(int)round(sc2*r1+(1-sc2)*r);
-  int g3=(int)round(sc2*g1+(1-sc2)*g);
-  int b3=(int)round(sc2*b1+(1-sc2)*b);
+    for (int sc=0;sc<stepsc;sc++) {
+      float sc1=(float)sc/stepsc;
+      float sc2=(float)(sc+1)/stepsc;
+      int r2=(int)round(sc1*r1+(1-sc1)*r);
+      int g2=(int)round(sc1*g1+(1-sc1)*g);
+      int b2=(int)round(sc1*b1+(1-sc1)*b);
+      int r3=(int)round(sc2*r1+(1-sc2)*r);
+      int g3=(int)round(sc2*g1+(1-sc2)*g);
+      int b3=(int)round(sc2*b1+(1-sc2)*b);
 
-  A[r3/S][g3/S][b3/S]++;
-  if (sc==0)
-    A[r2/S][g2/S][b2/S]++;
+      A[r3/S][g3/S][b3/S]++;
+      if (sc==0)
+        A[r2/S][g2/S][b2/S]++;
 
-    //    printf("%d %d %d -> %d %d %d\n",r2,g2,b2,r3,g3,b3);
-  int found=-1;
-  for (int ct=0;ct<alist[r2/S][g2/S][b2/S].size();ct++)
-   if (alist[r2/S][g2/S][b2/S][ct].x==r3/S &&
-     alist[r2/S][g2/S][b2/S][ct].y==g3/S &&
-     alist[r2/S][g2/S][b2/S][ct].z==b3/S){
-     found=ct;
-   ct=alist[r2/S][g2/S][b2/S].size();
- }
- if (found>=0){
-	  alist[r2/S][g2/S][b2/S][found].w+=1.0/(stepsc);//+abs(r/S-r1/S)+abs(g/S-g1/S)+abs(b/S-b1/S);
-	}
-	else{//aggiungi
-   edge t;
-   t.x=r3/S;
-   t.y=g3/S;
-   t.z=b3/S;
-   t.w=1.0/(stepsc);
-   alist[r2/S][g2/S][b2/S].push_back(t);
- }
+      //    printf("%d %d %d -> %d %d %d\n",r2,g2,b2,r3,g3,b3);
+      int found=-1;
+      for (int ct=0;ct<alist[r2/S][g2/S][b2/S].size();ct++)
+        if (alist[r2/S][g2/S][b2/S][ct].x==r3/S &&
+          alist[r2/S][g2/S][b2/S][ct].y==g3/S &&
+          alist[r2/S][g2/S][b2/S][ct].z==b3/S){
+          found=ct;
+        ct=alist[r2/S][g2/S][b2/S].size();
+      }
+      if (found>=0){
+      alist[r2/S][g2/S][b2/S][found].w+=1.0/(stepsc);//+abs(r/S-r1/S)+abs(g/S-g1/S)+abs(b/S-b1/S);
+    }
+      else{//aggiungi
+        edge t;
+        t.x=r3/S;
+        t.y=g3/S;
+        t.z=b3/S;
+        t.w=1.0/(stepsc);
+        alist[r2/S][g2/S][b2/S].push_back(t);
+      }
 
- found=-1;
- for (int ct=0;ct<alist[r3/S][g3/S][b3/S].size();ct++)
-   if (alist[r3/S][g3/S][b3/S][ct].x==r2/S &&
-     alist[r3/S][g3/S][b3/S][ct].y==g2/S &&
-     alist[r3/S][g3/S][b3/S][ct].z==b2/S){
-     found=ct;
-   ct=alist[r3/S][g3/S][b3/S].size();
- }
- if (found>=0){
-	  alist[r3/S][g3/S][b3/S][found].w+=1.0/(stepsc);//+abs(r/S-r1/S)+abs(g/S-g1/S)+abs(b/S-b1/S);
-	}
-	else{//aggiungi
-   edge t;
-   t.x=r2/S;
-   t.y=g2/S;
-   t.z=b2/S;
-   t.w=1.0/(stepsc);
-   alist[r3/S][g3/S][b3/S].push_back(t);
- }
-}
-}
+      found=-1;
+      for (int ct=0;ct<alist[r3/S][g3/S][b3/S].size();ct++)
+        if (alist[r3/S][g3/S][b3/S][ct].x==r2/S &&
+          alist[r3/S][g3/S][b3/S][ct].y==g2/S &&
+          alist[r3/S][g3/S][b3/S][ct].z==b2/S){
+          found=ct;
+        ct=alist[r3/S][g3/S][b3/S].size();
+      }
+      if (found>=0){
+      alist[r3/S][g3/S][b3/S][found].w+=1.0/(stepsc);//+abs(r/S-r1/S)+abs(g/S-g1/S)+abs(b/S-b1/S);
+    }
+      else{//aggiungi
+        edge t;
+        t.x=r2/S;
+        t.y=g2/S;
+        t.z=b2/S;
+        t.w=1.0/(stepsc);
+        alist[r3/S][g3/S][b3/S].push_back(t);
+      }
+    }
+  }
 }
 
 
@@ -2943,17 +2945,17 @@ if (0)
     p2y=sy-1;
     linea(p1x,p1y,p2x,p2y);
   }
-    th=divisioni;//sy;
-    if (th>sy) th=sy;
-    step=1;
-    for (int q=0;q<th;q+=step){
-      int p1x,p1y,p2x,p2y;
-      p1x=0;
-      p1y=sy*q/th;
-      p2x=sx-1;
-      p2y=sy*q/th;
-      linea(p1x,p1y,p2x,p2y);
-    }
+  th=divisioni;//sy;
+  if (th>sy) th=sy;
+  step=1;
+  for (int q=0;q<th;q+=step){
+    int p1x,p1y,p2x,p2y;
+    p1x=0;
+    p1y=sy*q/th;
+    p2x=sx-1;
+    p2y=sy*q/th;
+    linea(p1x,p1y,p2x,p2y);
+  }
 
     
   //normalizza per distanza rgb arco
@@ -5434,8 +5436,6 @@ for (int i=1;i<tempcol.size()-1;i++){
  printf("\n");
 }
 
-  /////cronometra1
-//clock_t begin = clock();
   /// clustering bezier con priorita' ai primi (piu' forti)
 if (1)
   for (int j1=0;j1<lists.size();j1++)
@@ -6094,6 +6094,9 @@ stat11.save("stats11.jpg");
 
 return 0;
 
+///fine programma//////////
+/*
+
 float total_matcha=0;
 float total_matchb=0;
 
@@ -6202,7 +6205,7 @@ while ( !feof(myfile)) {
 		    fabs(h1-h2);
 		    if (fabs(h1-h2)>0.5)
 		    disth=1-disth;
-		  */
+		  *//*
 		  float dist=disth;
 		  if (dbg)
         printf("    %d %d %f: %f %f %f - %f %f %f\n",i,j,dist,h1,s1,v1,h2,s2,v2);
@@ -6262,7 +6265,7 @@ while ( !feof(myfile)) {
 		    fabs(h1-h2);
 		    if (fabs(h1-h2)>0.5)
 		    disth=1-disth;
-		  */
+		  *//*
 		  float dist=disth;
 		  if (dbg)
         printf("    %d %d %f: %f %f %f - %f %f %f\n",i,j,dist,h1,s1,v1,h2,s2,v2);
@@ -6454,7 +6457,7 @@ code=10000;
 	      int r=(int)(z*S+y*S);
 	      int g=(int)(z*S-0.394*x*S-0.58*y*S);
 	      int b=(int)(z*S+2.03*x*S);
-	      */
+	      *//*
 	      int r=x*S;
 	      int g=y*S;
 	      int b=z*S;
