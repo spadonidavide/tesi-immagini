@@ -12,13 +12,17 @@
 using namespace std;
 
 int N_CLASSIFICA = 50;
-string default_ipath;// = "home/davide/Immagini/immagini/immagini_caricate/";
+//path dove dell acartella dove andrò a cercare il nome dell'immagine inserita da utente 
+string default_ipath;
 
+//bitmask pesata e senza pesi 
 vector<float> bitmask_pesi;
 vector<int> bitmask;
 
+//cubo per la ricerca delle immagini
 el_cube cube[16][16][16];
 
+//resetta le bitmask impostando tutti i valori a zero
 void reset_bitmask() {
 	for(int i=0; i<bitmask.size();++i){
 		bitmask[i] = 0;
@@ -30,13 +34,14 @@ void reset_bitmask() {
 
 }
 
+//trasforma un rgb innumero intero
 int get_pindex(int r, int g, int b) {
 	int indice = r + g * 16 + b * pow(16, 2);
 	
 	return indice;
 }
 
-
+//stampa la bitmask
 vector<int> plot_bitmask(int n_match) {
 	vector<int> id_img_match;
 	float max_peso = 0;
@@ -88,6 +93,7 @@ void ricerca_cube(const vector<list<id_iml> > &p_immagini) {
 	
 }
 
+//imposto tutti i valori del mio cubo a zero
 void reset_cube(){
 	for(int x=0; x<16; ++x){
 		for(int y=0; y<16; ++y){
@@ -99,7 +105,7 @@ void reset_cube(){
 	}
 }
 
-
+//crea la classifica generata dalla bitmask
 vector<string> get_classifica(I_manager manager) {
 	vector<string> classifica;
 	vector<int> scarti;
@@ -124,7 +130,7 @@ vector<string> get_classifica(I_manager manager) {
 	return classifica;
 }
 
-//imposta il path dove saranno andate a cercare le immagini
+//imposta il path della cartella dove l'utente inserirà il nome dell'imagine da cercare
 string set_default_ipath() {
 	char buf[255];
 	FILE *f=fopen("../indicizzatore/base_path.txt", "r");
@@ -138,8 +144,10 @@ string set_default_ipath() {
 int main() {
 	default_ipath = set_default_ipath();
 	I_manager manager;
+	//mi vado a caricare tutti i dati delle immagini che ho indicizzato
 	vector<list<id_iml> > p_immagini = manager.get_structure();
 	
+	//numero delle immagini che ho caricato
 	int count_immagini = manager.read_last_id() + 1;
 	
 	//aggiungo tanti elementi alle bitmask quante sono le mie immagini 
@@ -174,9 +182,9 @@ int main() {
 			path_immagine = default_ipath + path_immagine;
 
 			//faccio l'analisi dell'immagine che mi salva i dati in output.txt
-			//analisi_immagini(path_immagine.c_str());
-			//immagine img = load_file("img_ricerca.txt", path_immagine);
 			analisi_immagine(path_immagine.c_str());
+
+			//mi creo la mia immagine andando a leggere il file output.txt dove analisi immagine ha salvato i dati chalcolati 
 			immagine img = manager.carica_immagine("output.txt");
 
 			vector<linea_img> linee = img.get_linee();
@@ -203,27 +211,26 @@ int main() {
 			ricerca_cube(p_immagini);
 			plot_bitmask(1);
 			
-			
+			//mi calcolo la clasifica 
 			vector<string> paths = get_classifica(manager);
 			
+			//faccio una classifica più raffinata
 			DB_manager db_manager;
 			vector<string> c_paths = db_manager.ordina_classifica(paths);
 
+			//stampo i path dalla nuova classifica
 			for(int i=0; i<c_paths.size();++i) {
 				cout<<c_paths[i]<<endl;
-				//ho aggiunto due volte nel path consecutivamente la cartella immagini_caricate quindi torno indiero(trucchetto)
-				//es: immagini_caricate/../immagini_caricate
-				c_paths[i] = c_paths[i];
 			}
 			
-
+			//genero i titoli delle immagini che andrò a visualizzare
 			vector<string> titles;
 			for(int i=1; i<=c_paths.size(); ++i) {
 				string title = "match " + to_string(i);
 				titles.push_back(title);
 			}
 
-			
+			//visualizzo le immagini della mia classifica
 			show_image(c_paths, titles);		
 		}
 	}

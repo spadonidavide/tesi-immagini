@@ -6205,7 +6205,8 @@ while ( !feof(myfile)) {
 		    fabs(h1-h2);
 		    if (fabs(h1-h2)>0.5)
 		    disth=1-disth;
-		  *//*
+		  */
+      /*
 		  float dist=disth;
 		  if (dbg)
         printf("    %d %d %f: %f %f %f - %f %f %f\n",i,j,dist,h1,s1,v1,h2,s2,v2);
@@ -6265,7 +6266,8 @@ while ( !feof(myfile)) {
 		    fabs(h1-h2);
 		    if (fabs(h1-h2)>0.5)
 		    disth=1-disth;
-		  *//*
+		  */
+      /*
 		  float dist=disth;
 		  if (dbg)
         printf("    %d %d %f: %f %f %f - %f %f %f\n",i,j,dist,h1,s1,v1,h2,s2,v2);
@@ -6457,7 +6459,8 @@ code=10000;
 	      int r=(int)(z*S+y*S);
 	      int g=(int)(z*S-0.394*x*S-0.58*y*S);
 	      int b=(int)(z*S+2.03*x*S);
-	      *//*
+	      */
+        /*
 	      int r=x*S;
 	      int g=y*S;
 	      int b=z*S;
@@ -6624,5 +6627,5 @@ outi.save("out.jpg");
 
 
 
-return 0;
+return 0;*/
 }

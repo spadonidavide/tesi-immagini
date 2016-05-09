@@ -455,9 +455,9 @@ public:
 			}
 			fclose(f);
 			scores.push_back(match_prof());
-			//cout<<match_prof()<<endl;
 		}
 		
+		//calcolo la nuova classifica
 		int N_CLASSIFICA = 8;
 		vector<int> scarti;
 		vector<string> classifica;

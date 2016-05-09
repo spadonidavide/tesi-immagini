@@ -145,7 +145,6 @@ class I_manager {
 		
 		//ritorna la struttura organizzata salvata in indicizzatore.txt
 		//p_immagini[punto] contiene la lista delle immagini che hanno quel punto 
-		//TODO ne legge una in più se l'ultima riga è vuota
 		vector<list<id_iml> > get_structure() {
 			FILE* f = fopen(indicizz_path.c_str(), "r");
 			list<id_iml> lista;
